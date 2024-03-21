@@ -5,7 +5,7 @@ import {
   useHistory,
   useRouteMatch,
 } from 'react-router-dom';
-import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
+import { buildApiUrl, executeHttpClientRequest, useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import { NO_VALUE_FALLBACK } from '@commercetools-frontend/constants';
 import {
   usePaginationState,
@@ -42,6 +42,7 @@ type TChannelsProps = {
 };
 
 const Channels = (props: TChannelsProps) => {
+  
   const intl = useIntl();
   const match = useRouteMatch();
   const { push } = useHistory();

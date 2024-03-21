@@ -12,7 +12,7 @@ export default defineMessages({
   demoHint: {
     id: 'Products.demoHint',
     defaultMessage:
-      'This page demonstrates how you can develop a component following some of the Merchant Center UX Guidelines and development best practices. For instance, fetching data using GraphQL, displaying data in a paginated table, writing functional tests, etc.',
+      'The buttons below will illustrate how the product list can be shown according to various user types and their respective permissions.',
   },
   noResults: {
     id: 'Products.noResults',
