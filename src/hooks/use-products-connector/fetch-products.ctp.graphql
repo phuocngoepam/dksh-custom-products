@@ -1,0 +1,182 @@
+query FetchProducts(
+  $productsLimit: Int
+  $locale: Locale
+  $shouldIncludeProducts: Boolean!
+  $includeNames: [String!]
+  $shouldIncludeNames: Boolean!
+  $shouldIncludeState: Boolean!
+  $shouldIncludeCategories: Boolean!
+  $shouldIncludeTotalVariants: Boolean!
+  $shouldIncludeVariantKey: Boolean!
+  $shouldIncludePrices: Boolean!
+  $shouldIncludeId: Boolean!
+  $shouldIncludeAttributes: Boolean!
+  $shouldIncludeSku: Boolean!
+  $shouldIncludeImages: Boolean!
+  $shouldIncludeInventoryPerVariant: Boolean!
+  $shouldIncludeProductSelections: Boolean!
+  $productSelectionRefsLimit: Int = 5
+) {
+  products(limit: $productsLimit) @include(if: $shouldIncludeProducts) {
+    results {
+      ...ProductData
+      __typename
+    }
+    __typename
+  }
+}
+
+fragment ProductData on Product {
+  id
+  version
+  createdAt
+  lastModifiedAt
+  key
+  productType {
+    id
+    name
+    attributeDefinitions(includeNames: $includeNames)
+      @include(if: $shouldIncludeNames) {
+      results {
+        name
+        type {
+          name
+          ... on SetAttributeDefinitionType {
+            elementType {
+              name
+              __typename
+            }
+            __typename
+          }
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+    totalAttributeDefinitions: attributeDefinitions
+      @include(if: $shouldIncludeAttributes) {
+      results {
+        attributeConstraint
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+  state @include(if: $shouldIncludeState) {
+    key
+    name(locale: $locale)
+    __typename
+  }
+  productSelectionRefs(sort: "mode asc", limit: $productSelectionRefsLimit)
+    @include(if: $shouldIncludeProductSelections) {
+    total
+    results {
+      productSelection {
+        id
+        key
+        nameAllLocales {
+          locale
+          value
+          __typename
+        }
+        mode
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+  taxCategory {
+    name
+    __typename
+  }
+  masterData {
+    hasStagedChanges
+    published
+    staged {
+      name(locale: $locale)
+      nameAllLocales {
+        locale
+        value
+        __typename
+      }
+      description(locale: $locale)
+      slug(locale: $locale)
+      metaTitle(locale: $locale)
+      metaDescription(locale: $locale)
+      categories @include(if: $shouldIncludeCategories) {
+        id
+        externalId
+        nameAllLocales {
+          locale
+          value
+          __typename
+        }
+        ancestors {
+          id
+          name(locale: $locale)
+          __typename
+        }
+        __typename
+      }
+      masterVariant {
+        id
+        ...ProductVariant
+        __typename
+      }
+      variants @include(if: $shouldIncludeTotalVariants) {
+        ...ProductVariant
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+  __typename
+}
+
+fragment ProductVariant on ProductVariant {
+  id @include(if: $shouldIncludeId)
+  sku @include(if: $shouldIncludeSku)
+  key @include(if: $shouldIncludeVariantKey)
+  images @include(if: $shouldIncludeImages) {
+    url
+    __typename
+  }
+  prices @include(if: $shouldIncludePrices) {
+    id
+    value {
+      centAmount
+      currencyCode
+      fractionDigits
+      __typename
+    }
+    __typename
+  }
+  attributes: attributesRaw(includeNames: $includeNames)
+    @include(if: $shouldIncludeNames) {
+    name
+    value
+    __typename
+  }
+  availability @include(if: $shouldIncludeInventoryPerVariant) {
+    channels {
+      results {
+        availability {
+          availableQuantity
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+    noChannel {
+      availableQuantity
+      __typename
+    }
+    __typename
+  }
+  __typename
+}

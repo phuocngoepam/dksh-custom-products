@@ -1,16 +1,27 @@
-<p align="center">
-  <a href="https://commercetools.com/">
-    <img alt="commercetools logo" src="https://unpkg.com/@commercetools-frontend/assets/logos/commercetools_primary-logo_horizontal_RGB.png">
-  </a>
-  <b>Custom Application starter template in TypeScript</b>
-</p>
+# Merchant Center - Custom Products
 
-This is the [TypeScript](https://www.typescriptlang.org/) version of the starter template to [develop Custom Applications](https://docs.commercetools.com/custom-applications/) for the Merchant Center.
+## Guideline 
 
-# Installing the template
+### Sandbox
+[Sandbox](https://mc.australia-southeast1.gcp.commercetools.com)
+Note: This is only the sandbox for merchant center, the custom application can only run in the local machine at the moment 
 
-Read the [Getting started](https://docs.commercetools.com/custom-applications/getting-started) documentation for more information.
+### Setup local environment
+**Prerequisite:** Install Git, NPM, node in your local machine 
 
-# Developing the Custom Application
-
-Learn more about [developing a Custom Application](https://docs.commercetools.com/custom-applications/development) and [how to use the CLI](https://docs.commercetools.com/custom-applications/api-reference/cli).
+Clone the project using terminal 
+```sh
+git clone https://github.com/HoangLongEpam/dksh-custom-products.git
+```
+Navigate to the project folder 
+```sh
+cd dksh-custom-product 
+```
+Install dependencies 
+```sh
+npm install 
+```
+Start the application 
+```sh
+npm run start 
+```

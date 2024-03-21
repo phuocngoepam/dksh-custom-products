@@ -12488,6 +12488,35 @@ export type TFetchChannelsQueryVariables = Exact<{
   sort?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
+export type TFetchProductsQuery = {
+  __typename?: 'Query';
+  products: {
+    __typename?: 'ProductQueryResult';
+    results: Array<{
+      __typename?: 'Product';
+      id: string;
+      key: string;
+      version: number;
+      lastModifiedAt: Scalars['DateTime'];
+      createdAt: Scalars['DateTime'];
+      masterData: {
+        __typename?: 'ProductCatalogData';
+        hasStagedChanges: boolean;
+        published: boolean;
+        staged: {
+          __typename?: 'ProductData';
+          name: string;
+        };
+      };
+      productType: {
+        __typename?: 'ProductTypeReference';
+        id: string;
+        name: string;
+      };
+    }>;
+  };
+};
+
 export type TFetchChannelsQuery = {
   __typename?: 'Query';
   channels: {
@@ -12508,6 +12537,27 @@ export type TFetchChannelsQuery = {
     }>;
   };
 };
+
+export type TFetchProductsQueryVariables = Exact<{
+  includeNames: Scalars['String'][];
+  locale: Scalars['Locale'];
+  productsLimit: number;
+  productSelectionRefsLimit: number;
+  shouldIncludeAttributes: boolean;
+  shouldIncludeCategories: boolean;
+  shouldIncludeId: boolean;
+  shouldIncludeImages: boolean;
+  shouldIncludeInventoryPerVariant: boolean;
+  shouldIncludeNames: boolean;
+  shouldIncludePrices: boolean;
+  shouldIncludeProductSelections: boolean;
+  shouldIncludeProducts: boolean;
+  shouldIncludeSku: boolean;
+  shouldIncludeState: boolean;
+  shouldIncludeTotalVariants: boolean;
+  shouldIncludeVariantKey: boolean;
+  productsQuery?: string;
+}>;
 
 export type TUpdateChannelDetailsMutationVariables = Exact<{
   channelId: Scalars['String'];
