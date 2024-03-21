@@ -13,7 +13,7 @@ const config = {
     },
     production: {
       applicationId: 'clu0m8c4g000g5kdznv0kpyrq',
-      url: 'https://beamish-bienenstitch-2c38ba.netlify.app/'
+      url: 'https://dksh-custom-products.vercel.app/'
     },
   },
   oAuthScopes: {
