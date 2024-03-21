@@ -15,13 +15,13 @@ git clone https://github.com/HoangLongEpam/dksh-custom-products.git
 ```
 Navigate to the project folder 
 ```sh
-cd dksh-custom-product 
+cd dksh-custom-products
 ```
-Install dependencies 
+Install dependencies (We have to run install force due to some dependencies conflict coming from the commercetool template)
 ```sh
-npm install 
+npm install --force
 ```
-Start the application 
+Start the application (If it take too long, please cancel and run again, this is due to first build problem)
 ```sh
 npm run start 
 ```
