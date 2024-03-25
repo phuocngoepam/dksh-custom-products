@@ -1,5 +1,8 @@
 query FetchProducts(
   $productsLimit: Int
+  $productsQuery: String
+  $offset: Int
+  $sort: [String!]
   $locale: Locale
   $shouldIncludeProducts: Boolean!
   $includeNames: [String!]
@@ -17,11 +20,17 @@ query FetchProducts(
   $shouldIncludeProductSelections: Boolean!
   $productSelectionRefsLimit: Int = 5
 ) {
-  products(limit: $productsLimit) @include(if: $shouldIncludeProducts) {
+  products(where: $productsQuery, limit: $productsLimit, offset: $offset, sort: $sort) @include(if: $shouldIncludeProducts) {
+    total
+    offset
     results {
       ...ProductData
       __typename
     }
+    __typename
+  }
+  allProductsCount: products {
+    total
     __typename
   }
 }
