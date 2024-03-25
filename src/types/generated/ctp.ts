@@ -12492,6 +12492,8 @@ export type TFetchProductsQuery = {
   __typename?: 'Query';
   products: {
     __typename?: 'ProductQueryResult';
+    total: number;
+    offset: number;
     results: Array<{
       __typename?: 'Product';
       id: string;
@@ -12514,6 +12516,10 @@ export type TFetchProductsQuery = {
         name: string;
       };
     }>;
+  };
+  allProductsCount: {
+    __typename?: 'ProductQueryResult';
+    total: number;
   };
 };
 
@@ -12539,9 +12545,11 @@ export type TFetchChannelsQuery = {
 };
 
 export type TFetchProductsQueryVariables = Exact<{
+  sort?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
   includeNames: Scalars['String'][];
   locale: Scalars['Locale'];
   productsLimit: number;
+  offset: number;
   productSelectionRefsLimit: number;
   shouldIncludeAttributes: boolean;
   shouldIncludeCategories: boolean;

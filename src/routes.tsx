@@ -29,7 +29,7 @@ const ApplicationRoutes = (_props: ApplicationRoutesProps) => {
           <Channels linkToWelcome={match.url} />
         </Route>
         <Route path={`${match.path}/products`}>
-          <Products />
+          <Products linkToWelcome={match.url} />
         </Route>
         <Route>
           <Welcome />

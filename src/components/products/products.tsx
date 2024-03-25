@@ -8,7 +8,12 @@ import { getErrorMessage } from '../../helpers';
 import LoadingSpinner from '@commercetools-uikit/loading-spinner';
 import DataTable from '@commercetools-uikit/data-table';
 import SpacingsInline from '@commercetools-uikit/spacings-inline';
-
+import {
+  Link as RouterLink,
+  Switch,
+  useHistory,
+  useRouteMatch,
+} from 'react-router-dom';
 import {
   usePaginationState,
   useDataTableSortingState,
@@ -17,9 +22,14 @@ import dayjs from 'dayjs';
 import PrimaryButton from '@commercetools-uikit/primary-button';
 import Constraints from '@commercetools-uikit/constraints';
 import { useState } from 'react';
+import { Pagination } from '@commercetools-uikit/pagination';
+import { BackIcon } from '@commercetools-uikit/icons';
+import FlatButton from '@commercetools-uikit/flat-button';
+import DataTableManager from '@commercetools-uikit/data-table-manager';
+import CheckboxInput from '@commercetools-uikit/checkbox-input';
 
 type TProductsProps = {
-  linkToWelcome?: string;
+  linkToWelcome: string;
 };
 
 const columns = [
@@ -31,20 +41,53 @@ const columns = [
 ];
 
 const Products = (props: TProductsProps) => {
-  const [filter, setFilter] = useState('');
+  const [filter, setFilter] = useState<'sg' | 'vn' | 'all'>('all');
 
   const intl = useIntl();
+  const { page, perPage } = usePaginationState();
+  const tableSorting = useDataTableSortingState({ key: 'key', order: 'asc' });
 
-  const { productsResult, error, loading } = useProductsFetcher();
-
-  const productsData = productsResult?.products.results.filter((product) => {
-    return product.masterData.staged.name.toLowerCase().includes(filter);
+  const { productsResult, error, loading } = useProductsFetcher({
+    page,
+    perPage,
+    country: filter,
+    tableSorting,
   });
 
-  const handleDataFilter = (role: string, filter: string) => {
-    setFilter(filter.toLocaleLowerCase());
+  const productsData = productsResult?.products.results;
+
+  // productsData.
+
+  // console.log(productsData?.map((product) => product.id));
+
+  const handleDataFilter = (role: string, filter: 'sg' | 'vn' | 'all') => {
+    setFilter(filter);
+    page.onChange(1);
     alert('Switch to ' + role + ' role');
   };
+
+  // const columnsWithSelect = [
+  //   {
+  //     key: 'checkbox',
+  //     label: (
+  //       <CheckboxInput
+  //         isIndeterminate={isSelectColumnHeaderIndeterminate}
+  //         isChecked={countSelectedRows !== 0}
+  //         onChange={handleSelectColumnHeaderChange}
+  //       />
+  //     ),
+  //     shouldIgnoreRowClick: true,
+  //     align: 'center',
+  //     renderItem: (row) => (
+  //       <CheckboxInput
+  //         isChecked={getIsRowSelected(row.id)}
+  //         onChange={() => toggleRow(row.id)}
+  //       />
+  //     ),
+  //     disableResizing: true,
+  //   },
+  //   ...columns,
+  // ];
 
   if (error) {
     return (
@@ -56,7 +99,16 @@ const Products = (props: TProductsProps) => {
   return (
     <Spacings.Stack scale="xl">
       <Spacings.Stack scale="xs">
-        <Text.Headline as="h2" intlMessage={messages.title} />
+        <FlatButton
+          as={RouterLink}
+          to={props.linkToWelcome}
+          label={intl.formatMessage(messages.backToWelcome)}
+          icon={<BackIcon />}
+        />
+        <SpacingsInline scale="s" alignItems="baseline">
+          <Text.Headline as="h2" intlMessage={messages.title} />
+          <p>{productsResult?.products.total} items</p>
+        </SpacingsInline>
       </Spacings.Stack>
 
       <Constraints.Horizontal max={16}>
@@ -69,26 +121,22 @@ const Products = (props: TProductsProps) => {
         <SpacingsInline scale="s">
           <PrimaryButton
             label="Super Admin"
-            onClick={() => handleDataFilter('Super Admin', '')}
+            onClick={() => handleDataFilter('Super Admin', 'all')}
             isDisabled={false}
           />
           <PrimaryButton
             label="Market Lead Region"
-            onClick={() => handleDataFilter('Market Lead Region', '')}
+            onClick={() => handleDataFilter('Market Lead Region', 'all')}
             isDisabled={false}
           />
           <PrimaryButton
             label="Sales Admin in Vietnam"
-            onClick={() =>
-              handleDataFilter('Sales Admin in Vietnam', 'vietnam')
-            }
+            onClick={() => handleDataFilter('Sales Admin in Vietnam', 'vn')}
             isDisabled={false}
           />
           <PrimaryButton
             label="Sales Admin in Singapore"
-            onClick={() =>
-              handleDataFilter('Sales Admin in Singapore', 'singapore')
-            }
+            onClick={() => handleDataFilter('Sales Admin in Singapore', 'sg')}
             isDisabled={false}
           />
         </SpacingsInline>
@@ -97,27 +145,41 @@ const Products = (props: TProductsProps) => {
       {loading && <LoadingSpinner />}
 
       {productsData ? (
-        <Spacings.Stack scale="l">
-          <DataTable
-            isCondensed
-            columns={columns}
-            rows={productsData}
-            itemRenderer={(item, columns) => {
-              switch (columns.key) {
-                case 'name':
-                  return item.masterData.staged.name;
-                case 'key':
-                  return item.key;
-                case 'productType':
-                  return item.productType.name;
-                case 'createdAt':
-                  return dayjs(item.createdAt).format('DD/MM/YYYY HH:mm');
-                case 'lastModifiedAt':
-                  return dayjs(item.lastModifiedAt).format('DD/MM/YYYY HH:mm');
-                default:
-                  return null;
-              }
-            }}
+        <Spacings.Stack scale="m">
+          <Constraints.Horizontal max="scale">
+            <DataTableManager columns={columns}>
+              <DataTable
+                rows={productsData}
+                itemRenderer={(item, columns) => {
+                  switch (columns.key) {
+                    case 'name':
+                      return item.masterData.staged.name;
+                    case 'key':
+                      return item.key;
+                    case 'productType':
+                      return item.productType.name;
+                    case 'createdAt':
+                      return dayjs(item.createdAt).format('DD/MM/YYYY HH:mm');
+                    case 'lastModifiedAt':
+                      return dayjs(item.lastModifiedAt).format(
+                        'DD/MM/YYYY HH:mm'
+                      );
+                    default:
+                      return null;
+                  }
+                }}
+                sortedBy={tableSorting.value.key}
+                sortDirection={tableSorting.value.order}
+                onSortChange={tableSorting.onChange}
+              />
+            </DataTableManager>
+          </Constraints.Horizontal>
+          <Pagination
+            page={page.value}
+            onPageChange={page.onChange}
+            perPage={perPage.value}
+            onPerPageChange={perPage.onChange}
+            totalItems={productsResult?.products.total || 0}
           />
         </Spacings.Stack>
       ) : null}
